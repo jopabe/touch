@@ -73,7 +73,8 @@ gulp.task('images', () => {
 gulp.task('fonts', () => {
   return gulp.src(require('main-bower-files')({
     filter: '**/*.{eot,svg,ttf,woff,woff2}'
-  }).concat('app/fonts/**/*'))
+  }).concat('app/fonts/**/*')
+    .concat('bower_components/bootstrap-sass/assets/fonts/bootstrap/glyphicons-halflings-regular.*'))
     .pipe(gulp.dest('.tmp/fonts'))
     .pipe(gulp.dest('dist/fonts'));
 });
@@ -81,6 +82,7 @@ gulp.task('fonts', () => {
 gulp.task('extras', () => {
   return gulp.src([
     'app/*.*',
+    '!app/*.sw{o,p}',
     '!app/*.html'
   ], {
     dot: true
