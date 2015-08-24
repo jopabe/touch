@@ -1,1 +1,5 @@
-console.log('\'Allo \'Allo!');
+'use strict';
+
+//var $ = window.$;
+
+console.log('\'Allo \'Allo');
