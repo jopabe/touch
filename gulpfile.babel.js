@@ -36,11 +36,15 @@ function lint(files) {
 gulp.task('lint', lint('app/scripts/**/*.js'));
 gulp.task('lint:test', lint('test/spec/**/*.js'));
 
+function compileTemplates() {
+  return gulp.src(['app/*.html','!app/*.inc.html'])
+    .pipe($.fileInclude({prefix: '@@', basepath: '@file'}));
+}
+
 gulp.task('html', ['styles'], () => {
   const assets = $.useref.assets({searchPath: ['.tmp', 'app', '.']});
 
-  return gulp.src('app/*.html')
-    .pipe($.fileInclude({prefix: '@@', basepath: '@file'}))
+  return compileTemplates()
     .pipe(assets)
     .pipe($.if('*.js', $.uglify()))
     .pipe($.if('*.css', $.minifyCss({compatibility: '*'})))
@@ -77,22 +81,20 @@ gulp.task('fonts', () => {
 gulp.task('extras', () => {
   return gulp.src([
     'app/*.*',
-    '!app/*.inc',
     '!app/*.html'
   ], {
     dot: true
   }).pipe(gulp.dest('dist'));
 });
 
-gulp.task('fileinclude', () => {
-  return gulp.src('app/*.html')
-    .pipe($.fileInclude({prefix: '@@', basepath: '@file'}))
+gulp.task('templates', () => {
+  return compileTemplates()
     .pipe(gulp.dest('.tmp'));
 });
 
 gulp.task('clean', del.bind(null, ['.tmp', 'dist']));
 
-gulp.task('serve', ['styles', 'fonts', 'fileinclude'], () => {
+gulp.task('serve', ['styles', 'fonts', 'templates'], () => {
   browserSync({
     notify: false,
     port: 9000,
@@ -114,7 +116,7 @@ gulp.task('serve', ['styles', 'fonts', 'fileinclude'], () => {
   gulp.watch('app/styles/**/*.scss', ['styles']);
   gulp.watch('app/fonts/**/*', ['fonts']);
   gulp.watch('bower.json', ['wiredep', 'fonts']);
-  gulp.watch(['app/*.html', 'app/*.inc'], ['fileinclude']);
+  gulp.watch('app/*.html', ['templates']);
 });
 
 gulp.task('serve:dist', () => {
