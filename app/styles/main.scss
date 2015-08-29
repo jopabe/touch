@@ -111,8 +111,10 @@ body {
   }
 }
 
-.obfuscated-email:before {
-  content: attr(obfuscate-domain) "\0040" attr(obfuscate-user);
+.obfuscated-email {
   unicode-bidi: bidi-override;
   direction: rtl;
+}
+.obfuscated-email:before {
+  content: attr(obfuscate-domain) "\0040" attr(obfuscate-user);
 }
